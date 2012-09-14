@@ -1,7 +1,7 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
-Copyright (C) 2004 - 2011 EllisLab, Inc.
+Copyright (C) 2004 - 2012 EllisLab, Inc.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -26,11 +26,11 @@ in this Software without prior written authorization from EllisLab, Inc.
 */
 
 $plugin_info = array(
-						'pi_name'			=> 'URL and Email Auto-linker',
-						'pi_version'		=> '1.1',
-						'pi_author'			=> 'Rick Ellis',
-						'pi_author_url'		=> 'http://www.expressionengine.com/',
-						'pi_description'	=> 'Automatically links URLs within text',
+						'pi_name'			=> 'Auto Linker',
+						'pi_version'		=> '2.0',
+						'pi_author'			=> 'EllisLab',
+						'pi_author_url'		=> 'http://www.ellislab.com/',
+						'pi_description'	=> 'Automatically creates links from URLs and/or email addresses contained within the given text.',
 						'pi_usage'			=> Auto_linker::usage()
 					);
 
@@ -58,32 +58,19 @@ class Auto_linker {
     function Auto_linker($str = '')
     {
 		$this->EE =& get_instance();
+
+		$this->EE->load->helper('url');
 		
 		$str = ($str == '') ? $this->EE->TMPL->tagdata : $str;
-                
-    	$pop = ($this->EE->TMPL->fetch_param('target') == 'blank') ? " target=\"_blank\" " : "";
-    
-        // Clear period from the end of URLs
-        $str = preg_replace("#(^|\s|\()((http://|https://|www\.)\w+[^\s\)]+)\.([\s\)])#i", "\\1\\2{{PERIOD}}\\4", $str);
         
-        // Auto link URL
-        $str = preg_replace("#(^|\s|\(|>)((http(s?)://)|(www\.))(\w+[^\s\)\<]+)#i", "\\1<a href=\"http\\4://\\5\\6\"$pop>http\\4://\\5\\6</a>", $str);
+        // Parameter to determine whether to convert only
+        // URLs, email addresses, or both.
+    	$convert = ($this->EE->TMPL->fetch_param('convert') == 'url' OR $this->EE->TMPL->fetch_param('convert') == 'email') ? $this->EE->TMPL->fetch_param('convert') : 'both';
 
-        //$str = preg_replace("#(^|\s|\(|..\])((http(s?)://)|(www\.))(\w+[^\s\)\<\[]+)#im", "\\1<a href=\"http\\4://\\5\\6\"$pop>http\\4://\\5\\6</a>", $str);
+    	// Parameter to determine whether link opens in a new window.
+    	$pop = ($this->EE->TMPL->fetch_param('target') == 'blank') ? TRUE : FALSE;
 
-
-        
-        // Clean up periods
-        $str = preg_replace("#<a href=(.+?){{PERIOD}}(.+?){{PERIOD}}</a>#", "<a href=\\1\\2</a>.", $str);
-        
-        // Clear period from the end of emails
-        $str = preg_replace("#(^|\s|\(|>)([a-zA-Z0-9_\.\-]+)@([a-zA-Z0-9\-]+)\.([a-zA-Z0-9\-\.]*)\.([\s\)])#i","\\1\\2@\\3.\\4\\5{{PERIOD}}",$str);
-        
-        // Auto link email
-        $str = preg_replace("/(^|\s|\(|>)([a-zA-Z0-9_\.\-]+)@([a-zA-Z0-9\-]+)\.([a-zA-Z0-9\-\.]*)/i", "\\1<a href=\"mailto:\\2@\\3.\\4\">\\2@\\3.\\4</a>", $str);
-
-		// Cleand up stray periods
- 		$str = str_replace(" {{PERIOD}}", ". ", $str);
+        $str = auto_link($str, $convert, $pop);
  
  		$this->return_data = $str;
 	}
@@ -102,9 +89,11 @@ class Auto_linker {
 	{
 		ob_start(); 
 		?>
-		Auto-links URLs
+		=====================================================
+		Example
+		=====================================================
 
-		Wrap whatever you want formatted within:
+		Wrap the text to be formatted within the plugin tags, like so:
 
 		{exp:auto_linker}
 
@@ -112,10 +101,33 @@ class Auto_linker {
 
 		{/exp:auto_linker}
 
+		or...
 
-		There is one optional parameter which will option links in a new window.
+		{exp:auto_linker}
+
+		{custom_field}
+
+		{/exp:auto_linker}
+
+
+		Note: Mailto links created for email addresses use an obfuscated version of the mailto tag containing ordinal numbers written with JavaScript to help prevent the email address from being harvested by spam bots.
+
+		=====================================================
+		Optional Parameters
+		=====================================================
 
 		target="blank"
+		- Links will open in a new window.
+
+		convert=""
+		- Set to "url" to only convert URLs.
+		- Set to "email" to only convert email addresses.
+
+
+		Version 2.0
+		******************
+		- Simplified plugin to use the auto_link() function from CodeIgniter's URL helper.
+		- New optional parameter to choose to auto-link only URLs or email addresses.
 
 		Version 1.1
 		******************
