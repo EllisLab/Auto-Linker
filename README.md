@@ -29,12 +29,10 @@ convert=""
 - Set to "url" to only convert URLs.
 - Set to "email" to only convert email addresses.
 
+## Change Log
 
-Version 2.0
-******************
-- Simplified plugin to use the auto_link() function from CodeIgniter's URL helper.
-- New optional parameter to choose to auto-link only URLs or email addresses.
-
-Version 1.1
-******************
-- Updated plugin to be 2.0 compatible
+- 2.0
+	- Simplified plugin to use the auto_link() function from CodeIgniter's URL helper.
+	- New optional parameter to choose to auto-link only URLs or email addresses.
+- 1.1
+	- Updated plugin to be 2.0 compatible
