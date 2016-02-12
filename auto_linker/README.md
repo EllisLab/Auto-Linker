@@ -2,6 +2,10 @@
 
 Automatically creates links from URLs and/or email addresses contained within the given text.
 
+## Installation
+
+Copy the `auto_linker` folder to your `system/user/addons` folder (you can ignore the rest of this repository's files). In your ExpressionEngine control panel, visit the Add-On Manager and click Install next to "Auto Linker".
+
 ## Usage
 
 ### `{exp:auto_linker}`
@@ -36,6 +40,10 @@ Note: Mailto links created for email addresses use an obfuscated version of the 
 - `convert` - (url/email)  Set to "url" to only convert URLs. Set to "email" to only convert email addresses.
 
 ## Change Log
+
+### 3.0.1
+
+- Added installation instructions
 
 ### 3.0
 
