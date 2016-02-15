@@ -12,3 +12,17 @@ install:
 
 script:
   - vendor/jakub-onderka/php-parallel-lint/parallel-lint --exclude vendor .
+
+before_deploy: "zip -r 'Auto-Linker' auto_linker"
+
+deploy:
+  provider: releases
+  api_key:
+    secure: oiJzWl3GyUPAtauGq8LCRAuIhYHlm2ewA5Fnyv3OMw9SgAJKhCz/7AoxvJ4uuQ1mqlNnStTdKcStBNbLfEWkfMlYkEQ36vBtaC0kb+5PmA2e3RgSsdGmJ55ZMB94ZCrlwyALF+4Nwjivnx8A7um3G+JjDJ7aOOYZKyE94dQ3eOE=
+  file: Auto-Linker.zip
+  skip_cleanup: true
+  on:
+    php: 7.0
+    tags: true
+    condition: $TRAVIS_PULL_REQUEST = false
+
