@@ -2,6 +2,11 @@
 
 Automatically creates links from URLs and/or email addresses contained within the given text.
 
+## Requirements
+
+- ExpressionEngine 3+
+- PHP 5.4+
+
 ## Installation
 
 1. Download the [latest release](https://github.com/EllisLab/Auto-Linker/releases/latest).
